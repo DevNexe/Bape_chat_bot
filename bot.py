@@ -234,7 +234,7 @@ async def handle_commands(message: types.Message):
         )
         await message.answer(f"{message.reply_to_message.from_user.username} заткнись на 10 минут. 🤌")
 
-    if command == "сколько у меня коинов":
+    elif command == "сколько у меня коинов":
         username = message.from_user.username or message.from_user.full_name
         coins = get_coins(username)
         await message.reply(f"{username}, у вас {coins} Мато коин(ов). 🪙")
