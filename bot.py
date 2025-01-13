@@ -6,16 +6,14 @@ import re
 import random
 
 
-API_TOKEN = "7383922770:AAFg3fRJMft-NV9911qia1Cqjy7ReT-5vTk"
+API_TOKEN = "7778634250:AAHlgfUNEG246xkQDKh2iIOC3qX1xduG_HQ"
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
 print("start")
 
-COMMAND_PREFIXES = ["Бейп ", "бейп ", "Бэйп ", "бэйп ", "Bape ", "bape "]  # Уникальные префиксы
+COMMAND_PREFIXES = ["Бот ", "бот ", "Bot ", "bot "]  # Уникальные префиксы
 WARNINGS_FILE = "warnings.txt"
-
-COINS_FILE = "coins.txt"
 
 BAD_WORDS = [
     "блядь", "сука", "пизда", "хуй", "ебать", "еблан", "хер", "тварь", "мудила", "дрочить", 
@@ -85,15 +83,6 @@ def write_file(data, filename):
         for username, count in data.items():
             f.write(f"{username}: {count}\n")
 
-def add_coin(username):
-    coins = read_file(COINS_FILE)
-    coins[username] = coins.get(username, 0) + 1
-    write_file(coins, COINS_FILE)
-
-def get_coins(username):
-    coins = read_file(COINS_FILE)
-    return coins.get(username, 0)
-
 # Функция проверки сообщения на наличие матерных слов
 def contains_bad_word(text):
     pattern = r'\b(?:' + '|'.join(map(re.escape, BAD_WORDS)) + r')\b'
@@ -141,25 +130,108 @@ def remove_prefix(message_text):
 # Команда предупреждения
 @dp.message()
 async def handle_commands(message: types.Message):
-    if contains_bad_word(message.text):
+    if "start" in message.text:
         username = message.from_user.username or message.from_user.full_name
-        add_coin(username)
-        coins = get_coins(username)
-        await message.reply(f"Ай ай ай {username}, нельзя материться! 🙅‍♂️")
+        await message.reply(f"Привет {username}, чем могу помочь?")
 
-    if hello(message.text):
+    elif "warn" in message.text:
+        if not message.reply_to_message:
+            await message.answer("Эту команду нужно использовать в ответ на сообщение пользователя.")
+            return
+
+        username = message.reply_to_message.from_user.username or "пользователь"
+        add_warning(username)
+        warning_count = get_warnings(username)
+        await message.answer(f"{username} я даю тебе предупреждение! Всего предупреждений: {warning_count}. ‼️‼️‼️")
+
+        if warning_count >= 3:
+            await temp_ban(message.reply_to_message, 1)
+            await message.answer(f"{username} временно забанен на 1 день за 3 нарушения.")
+            reset_warnings(username)
+
+    elif "ban" in message.text:
+        if not message.reply_to_message:
+            await message.answer("Эту команду нужно использовать в ответ на сообщение пользователя.")
+            return
+
+        await message.chat.ban(message.reply_to_message.from_user.id)
+        await message.answer(f"Пользователь {message.reply_to_message.from_user.username}. был забанен")
+
+    elif "pardon" in message.text:
+        if not message.reply_to_message:
+            await message.answer("Эту команду нужно использовать в ответ на сообщение пользователя.")
+            return
+
+        await bot.unban_chat_member(chat_id=message.chat.id, user_id=message.reply_to_message.from_user.id)
+        await bot.restrict_chat_member(
+            chat_id=message.chat.id,
+            user_id=message.reply_to_message.from_user.id,
+            permissions=ChatPermissions(
+                can_send_messages=True,
+                can_send_media_messages=True,
+                can_send_other_messages=True,
+                can_add_web_page_previews=True
+            )
+        )
+        await message.answer(f"{message.reply_to_message.from_user.username} можно вернуться.")
+
+    elif "clear" in message.text:
+        if not message.reply_to_message:
+            await message.answer("Эту команду нужно использовать в ответ на сообщение пользователя.")
+            return
+
+        async for msg in bot.get_chat_history(message.chat.id, limit=10):
+            if msg.from_user.id == message.reply_to_message.from_user.id:
+                await msg.delete()
+
+        await message.answer(f"Последние 10 сообщений от {message.reply_to_message.from_user.username} были уничтожены.")
+
+    elif "mute" in message.text:
+        if not message.reply_to_message:
+            await message.answer("Эту команду нужно использовать в ответ на сообщение пользователя.")
+            return
+
+        mute_duration = timedelta(minutes=10)
+        until_date = message.date + mute_duration
+
+        await bot.restrict_chat_member(
+            chat_id=message.chat.id,
+            user_id=message.reply_to_message.from_user.id,
+            permissions=ChatPermissions(can_send_messages=False),
+            until_date=until_date
+        )
+        await message.answer(f"Пользователю {message.reply_to_message.from_user.username} запрещенно говорить в течении 10 минут.")
+
+    elif "unmute" in message.text:
+        if not message.reply_to_message:
+            await message.answer("Эту команду нужно использовать в ответ на сообщение пользователя.")
+            return
+
+        await bot.restrict_chat_member(
+            chat_id=message.chat.id,
+            user_id=message.reply_to_message.from_user.id,
+            permissions=ChatPermissions(
+                can_send_messages=True,
+                can_send_media_messages=True,
+                can_send_other_messages=True,
+                can_add_web_page_previews=True
+            )
+        )
+        await message.answer(f"{message.reply_to_message.from_user.username} тебе разрешается говорить.")
+
+    elif hello(message.text):
         rdm = random.choice(rndm)
         await message.reply(rdm)
 
-    if bye(message.text):
+    elif bye(message.text):
         rdby = random.choice(rdb)
         await message.reply(rdby)
 
-    if good_night(message.text):
+    elif good_night(message.text):
         rdgn = random.choice(rgn)
         await message.reply(rdgn)
 
-    if not has_prefix(message.text):
+    elif not has_prefix(message.text):
         return  # Игнорируем сообщения 
     command_body = remove_prefix(message.text)  # Убираем префикс
     args = command_body.split(maxsplit=1)  # Разделяем команду и аргументы
@@ -178,7 +250,7 @@ async def handle_commands(message: types.Message):
 
         if warning_count >= 3:
             await temp_ban(message.reply_to_message, 1)
-            await message.answer(f"{username} временно послан нахуй на 1 день за 3 нарушения. 🖕🖕🖕")
+            await message.answer(f"{username} временно забанен на 1 день за 3 нарушения.")
             reset_warnings(username)
 
     elif command == "забанить":
@@ -187,7 +259,7 @@ async def handle_commands(message: types.Message):
             return
 
         await message.chat.ban(message.reply_to_message.from_user.id)
-        await message.answer(f"Пошел нахуй {message.reply_to_message.from_user.username}. 🖕")
+        await message.answer(f"Пользователь {message.reply_to_message.from_user.username} забанен.")
 
     elif command == "разбанить":
         if not message.reply_to_message:
@@ -205,7 +277,7 @@ async def handle_commands(message: types.Message):
                 can_add_web_page_previews=True
             )
         )
-        await message.answer(f"{message.reply_to_message.from_user.username} можно вернуться. 🫥")
+        await message.answer(f"{message.reply_to_message.from_user.username} можно вернуться.")
 
     elif command == "очистить сообщения":
         if not message.reply_to_message:
@@ -216,7 +288,7 @@ async def handle_commands(message: types.Message):
             if msg.from_user.id == message.reply_to_message.from_user.id:
                 await msg.delete()
 
-        await message.answer(f"Последние 10 сообщений от {message.reply_to_message.from_user.username} уничтожены нахуй. 😤")
+        await message.answer(f"Последние 10 сообщений от {message.reply_to_message.from_user.username} уничтожены.")
 
     elif command == "мут":
         if not message.reply_to_message:
@@ -232,13 +304,7 @@ async def handle_commands(message: types.Message):
             permissions=ChatPermissions(can_send_messages=False),
             until_date=until_date
         )
-        await message.answer(f"{message.reply_to_message.from_user.username} заткнись на 10 минут. 🤌")
-
-    elif command == "сколько у меня коинов":
-        username = message.from_user.username or message.from_user.full_name
-        coins = get_coins(username)
-        await message.reply(f"{username}, у вас {coins} Мато коин(ов). 🪙")
-
+        await message.answer(f"Пользователю {message.reply_to_message.from_user.username} запрещенно говорить в течении 10 минут.")
 
     elif command == "размут":
         if not message.reply_to_message:
@@ -255,7 +321,7 @@ async def handle_commands(message: types.Message):
                 can_add_web_page_previews=True
             )
         )
-        await message.answer(f"{message.reply_to_message.from_user.username} разрешаю тебе говорить. 🤐")
+        await message.answer(f"{message.reply_to_message.from_user.username} тебе разрешается говорить.")
 
 # Функция временного бана
 async def temp_ban(message: types.Message, days: int):
