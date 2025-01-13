@@ -1,0 +1,29 @@
+2025-01-13 21:19:42,981 [INFO] Бот запущен
+2025-01-13 21:19:42,985 [INFO] Start polling
+2025-01-13 21:19:43,351 [INFO] Run polling for bot @DevNexe_project_bot id=7778634250 - 'ProjectBot'
+2025-01-13 21:19:56,740 [INFO] Получено сообщение от DevNexe: Бот предупредить
+2025-01-13 21:19:56,787 [INFO] Добавлено предупреждение для пользователя DevNexe_project_bot
+2025-01-13 21:19:56,788 [INFO] Получено количество предупреждений для DevNexe_project_bot: 2
+2025-01-13 21:19:57,191 [INFO] Update id=693626250 is handled. Duration 438 ms by bot id=7778634250
+2025-01-13 21:23:17,788 [INFO] Polling stopped
+2025-01-13 21:23:18,054 [INFO] Polling stopped for bot @DevNexe_project_bot id=7778634250 - 'ProjectBot'
+2025-01-13 21:23:26,752 [INFO] Бот запущен
+2025-01-13 21:23:26,757 [INFO] Start polling
+2025-01-13 21:23:27,115 [INFO] Run polling for bot @DevNexe_project_bot id=7778634250 - 'ProjectBot'
+2025-01-13 21:23:40,772 [INFO] Получено сообщение от DevNexe: Бот предупредить
+2025-01-13 21:23:40,818 [INFO] Добавлено предупреждение для пользователя DevNexe
+2025-01-13 21:23:41,193 [INFO] Update id=693626251 is handled. Duration 421 ms by bot id=7778634250
+2025-01-13 21:23:55,662 [INFO] Получено сообщение от DevNexe: помощь
+2025-01-13 21:23:55,753 [INFO] Update id=693626252 is handled. Duration 77 ms by bot id=7778634250
+2025-01-13 21:24:16,936 [INFO] Получено сообщение от DevNexe: сука
+2025-01-13 21:24:17,003 [INFO] Добавлено предупреждение для пользователя DevNexe
+2025-01-13 21:24:17,348 [INFO] Update id=693626253 is handled. Duration 421 ms by bot id=7778634250
+2025-01-13 21:28:19,945 [INFO] Polling stopped
+2025-01-13 21:28:20,200 [INFO] Polling stopped for bot @DevNexe_project_bot id=7778634250 - 'ProjectBot'
+2025-01-13 21:28:33,133 [INFO] Бот запущен с безопасным хранением токена.
+2025-01-13 21:28:33,138 [INFO] Start polling
+2025-01-13 21:28:33,516 [INFO] Run polling for bot @DevNexe_project_bot id=7778634250 - 'ProjectBot'
+2025-01-13 21:29:34,528 [INFO] Получено сообщение от DevNexe: привет
+2025-01-13 21:29:34,976 [INFO] Update id=693626254 is handled. Duration 452 ms by bot id=7778634250
+2025-01-13 21:29:46,481 [INFO] Polling stopped
+2025-01-13 21:29:46,738 [INFO] Polling stopped for bot @DevNexe_project_bot id=7778634250 - 'ProjectBot'

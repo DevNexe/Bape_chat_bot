@@ -1,2 +1,0 @@
-bot_4_husan_bot: 1
-SANamir1: 0
